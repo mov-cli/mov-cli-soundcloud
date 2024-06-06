@@ -13,7 +13,7 @@ Here's how to install and add the plugin to mov-cli.
 
 1. Install the pip package.
 ### Currently not available
-3. Then add the plugin to your mov-cli config.
+2. Then add the plugin to your mov-cli config.
 ```sh
 mov-cli -e
 ```
