@@ -12,10 +12,8 @@
 Here's how to install and add the plugin to mov-cli.
 
 1. Install the pip package.
-```sh
-pip install mov-cli-soundcloud
-```
-2. Then add the plugin to your mov-cli config.
+### Currently not available
+3. Then add the plugin to your mov-cli config.
 ```sh
 mov-cli -e
 ```
