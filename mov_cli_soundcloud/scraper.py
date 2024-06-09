@@ -34,7 +34,9 @@ class SoundCloudScraper(Scraper):
         super().__init__(config, http_client, options)
 
     def search(self, query: str, limit: Optional[int]) -> Iterable[Metadata]:
-        search_page = self.http_client.get(f"{self.base_url}/search?q={query}")
+        search_page = self.http_client.get(
+            f"{self.base_url}/search", params = {"q": query}
+        )
 
         soup = self.soup(search_page)
 
@@ -51,17 +53,17 @@ class SoundCloudScraper(Scraper):
             if item["href"].count("/") == 2: # NOTE: only get music
                 with yt_dlp.YoutubeDL(yt_options) as f:
                     info = f.extract_info(self.base_url + item["href"])
-                    
+
                 yield SoundCloudMetadata(
                     id = _,
                     title = info.get("title") + " ~ " + info.get("uploader"),
                     type = MetadataType.SINGLE,
+                    image_url = info.get("thumbnails")[-1]["url"],
                     year = info.get("upload_date", "")[:4],
                     info = info,
 
                     extra_func = lambda: ExtraMetadata(
                         description = info.get("description"),
-                        image_url = info.get("thumbnails")[-1]["url"],
                         genres = info.get("genres")
                     )
                 )
