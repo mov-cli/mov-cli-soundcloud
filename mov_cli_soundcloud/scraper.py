@@ -5,7 +5,7 @@ from mov_cli.config import Config
 from mov_cli.http_client import HTTPClient
 
 if TYPE_CHECKING:
-    from typing import Optional, Generator, Any
+    from typing import Optional
 
     from mov_cli import Config
     from mov_cli.http_client import HTTPClient
@@ -53,10 +53,12 @@ class SoundCloudScraper(Scraper):
             if item["href"].count("/") == 2: # NOTE: only get music
                 with yt_dlp.YoutubeDL(yt_options) as f:
                     info = f.extract_info(self.base_url + item["href"])
+                
+                go = " (GO+)" if "preview" in info.get("formats")[-1]["url"] else ""
 
                 yield SoundCloudMetadata(
                     id = _,
-                    title = info.get("title") + " ~ " + info.get("uploader"),
+                    title = info.get("title") + f"{go} ~ " + info.get("uploader"),
                     type = MetadataType.SINGLE,
                     image_url = info.get("thumbnails")[-1]["url"],
                     year = info.get("upload_date", "")[:4],
@@ -68,7 +70,7 @@ class SoundCloudScraper(Scraper):
                     )
                 )
 
-    def scrape(self, metadata: SoundCloudScraper, episode: utils.EpisodeSelector) -> Single:
+    def scrape(self, metadata: SoundCloudMetadata, _: utils.EpisodeSelector) -> Single:
         return Single(
             url = metadata.info.get("formats")[-1]["url"],
             title = metadata.title,
